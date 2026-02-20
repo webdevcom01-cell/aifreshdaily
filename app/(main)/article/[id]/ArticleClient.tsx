@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import Link from 'next/link';
 import { fetchArticleById, fetchByCategory, incrementViewCount } from '@/lib/supabase';
 import { useBookmarks } from '@/hooks/useBookmarks';
@@ -132,7 +132,14 @@ export default function ArticleClient({ id, initialArticle }: Props) {
         {article.body ? (
           <div className="prose prose-lg dark:prose-invert max-w-none mb-8 text-foreground/90 leading-relaxed">
             {article.body.split('\n\n').map((para, i) => (
-              <p key={i} className="mb-4 text-base sm:text-lg leading-relaxed">{para}</p>
+              <p key={i} className="mb-4 text-base sm:text-lg leading-relaxed">
+                {para.split('\n').map((line, j, arr) => (
+                  <Fragment key={j}>
+                    {line}
+                    {j < arr.length - 1 && <br />}
+                  </Fragment>
+                ))}
+              </p>
             ))}
           </div>
         ) : (
@@ -148,8 +155,8 @@ export default function ArticleClient({ id, initialArticle }: Props) {
           </>
         )}
 
-        {/* Key Points — only shown when no full article body exists */}
-        {!article.body && keyPoints.length > 0 && (
+        {/* Key Points — shown for all articles that have them */}
+        {keyPoints.length > 0 && (
           <div className="mb-8">
             <div className="flex items-center gap-2 mb-4">
               <CheckCircle2 className="w-4 h-4 text-green-500" />

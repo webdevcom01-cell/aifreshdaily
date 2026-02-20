@@ -107,7 +107,7 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
       setIsSearching(true);
       setHasSearched(true);
 
-      // Try full-text search first, fall back to ilike if no results
+      // 1) Try full-text search on headline first (fast + ranked)
       const { data: ftData } = await supabase
         .from('articles')
         .select('id, headline, excerpt, image, category, read_time, tags')
@@ -120,11 +120,12 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
         return;
       }
 
-      // Fallback: ilike headline
+      // 2) Fallback: ilike across headline + excerpt, plus exact tag match
+      const tagSlug = q.toLowerCase().trim().replace(/\s+/g, '-');
       const { data: likeData } = await supabase
         .from('articles')
         .select('id, headline, excerpt, image, category, read_time, tags')
-        .ilike('headline', `%${q}%`)
+        .or(`headline.ilike.%${q}%,excerpt.ilike.%${q}%,tags.cs.{${tagSlug}}`)
         .limit(8);
 
       setResults((likeData ?? []) as ArticleRow[]);
