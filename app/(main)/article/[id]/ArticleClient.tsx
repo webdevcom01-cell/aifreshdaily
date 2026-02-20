@@ -6,7 +6,7 @@ import { useBookmarks } from '@/hooks/useBookmarks';
 import type { Article } from '@/types';
 import {
   ArrowLeft, Clock, User, Calendar, Share2, Twitter, Linkedin,
-  Link as LinkIcon, Bookmark, BookmarkCheck, ExternalLink,
+  Link as LinkIcon, Bookmark, BookmarkCheck,
   Sparkles, CheckCircle2, Lightbulb,
 } from 'lucide-react';
 
@@ -117,25 +117,6 @@ export default function ArticleClient({ id, initialArticle }: Props) {
           <div className="flex items-center gap-1.5"><Clock className="w-4 h-4" /><span>{article.readTime}</span></div>
           {article.publishedAt && <div className="flex items-center gap-1.5"><Calendar className="w-4 h-4" /><span>{article.publishedAt}</span></div>}
         </div>
-
-        {/* Source Banner */}
-        {article.source && (
-          <div className="flex items-center justify-between p-4 mb-8 rounded-xl bg-secondary/50 border border-border">
-            <div className="flex items-center gap-3">
-              {article.source.favicon && <img src={article.source.favicon} alt={article.source.name} className="w-5 h-5 rounded" />}
-              <div>
-                <p className="text-xs text-muted-foreground">Original source</p>
-                <p className="text-sm font-semibold text-foreground">{article.source.name}</p>
-              </div>
-            </div>
-            {article.originalUrl && (
-              <a href={article.originalUrl} target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 ai-gradient-bg text-white text-sm font-medium rounded-lg hover:opacity-90">
-                Read original <ExternalLink className="w-3.5 h-3.5" />
-              </a>
-            )}
-          </div>
-        )}
 
         {/* Hero Image */}
         {article.image && (

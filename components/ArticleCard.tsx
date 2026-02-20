@@ -8,18 +8,6 @@ interface ArticleCardProps {
   className?: string;
 }
 
-function SourceBadge({ source }: { source: Article['source'] }) {
-  if (!source) return null;
-  return (
-    <div className="flex items-center gap-1.5">
-      {source.favicon && (
-        <img src={source.favicon} alt={source.name} className="w-3.5 h-3.5 rounded-sm" />
-      )}
-      <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">{source.name}</span>
-    </div>
-  );
-}
-
 function TagList({ tags }: { tags?: string[] }) {
   if (!tags || tags.length === 0) return null;
   return (
@@ -42,7 +30,7 @@ export default function ArticleCard({
   showImage = true,
   className = '',
 }: ArticleCardProps) {
-  const { headline, image, category, author, readTime, isExclusive, source, tags } = article;
+  const { headline, image, category, author, readTime, isExclusive, tags } = article;
 
   if (variant === 'compact') {
     return (
@@ -63,7 +51,6 @@ export default function ArticleCard({
             </h4>
             <div className="mt-1 flex items-center gap-2">
               <span className="text-xs text-gray-500 dark:text-gray-400">{readTime}</span>
-              {source && <SourceBadge source={source} />}
             </div>
           </div>
         </div>
@@ -86,7 +73,6 @@ export default function ArticleCard({
             </h3>
             <div className="mt-2 flex items-center gap-3">
               <span className="text-sm text-gray-500 dark:text-gray-400">{readTime}</span>
-              {source && <SourceBadge source={source} />}
             </div>
           </div>
           {showImage && image && (
@@ -113,7 +99,6 @@ export default function ArticleCard({
         </h4>
         <div className="mt-1 flex items-center gap-3">
           <span className="text-sm text-gray-500 dark:text-gray-400">{readTime}</span>
-          {source && <SourceBadge source={source} />}
         </div>
       </article>
     );
@@ -146,9 +131,8 @@ export default function ArticleCard({
           {headline}
         </h3>
         {author && <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{author}</p>}
-        <div className="mt-2 flex items-center justify-between">
+        <div className="mt-2 flex items-center gap-3">
           <span className="text-sm text-gray-500 dark:text-gray-400">{readTime}</span>
-          {source && <SourceBadge source={source} />}
         </div>
         <TagList tags={tags} />
       </div>
