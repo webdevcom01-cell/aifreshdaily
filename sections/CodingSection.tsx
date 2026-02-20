@@ -10,7 +10,7 @@ export default function CodingSection() {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        fetchByCategory('AI Coding', 6)
+        fetchByCategory('tools', 6)
             .then((data) => { setArticles(data); setIsLoading(false); })
             .catch(() => setIsLoading(false));
     }, []);
@@ -22,7 +22,7 @@ export default function CodingSection() {
                     <div className="p-2 bg-gray-900 dark:bg-white/10 rounded-lg">
                         <Terminal className="w-5 h-5 text-green-400" />
                     </div>
-                    <h2 className="text-2xl font-heading font-bold text-gray-900 dark:text-white">AI Coding</h2>
+                    <h2 className="text-2xl font-heading font-bold text-gray-900 dark:text-white">Tools & Dev</h2>
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
                     <div className="lg:col-span-3 aspect-[16/9] bg-gray-200 dark:bg-ai-space-medium rounded-xl animate-pulse" />
@@ -50,9 +50,9 @@ export default function CodingSection() {
                     <div className="p-2 bg-gray-900 dark:bg-white/10 rounded-lg">
                         <Terminal className="w-5 h-5 text-green-400" />
                     </div>
-                    <h2 className="text-2xl font-heading font-bold text-gray-900 dark:text-white">AI Coding</h2>
+                    <h2 className="text-2xl font-heading font-bold text-gray-900 dark:text-white">Tools & Dev</h2>
                 </div>
-                <p className="text-gray-500 dark:text-gray-400 text-sm">No AI Coding articles yet.</p>
+                <p className="text-gray-500 dark:text-gray-400 text-sm">No tools articles yet.</p>
             </section>
         );
     }
@@ -67,7 +67,7 @@ export default function CodingSection() {
                     <Terminal className="w-5 h-5 text-green-400" />
                 </div>
                 <h2 className="text-2xl font-heading font-bold text-gray-900 dark:text-white">
-                    AI Coding
+                    Tools & Dev
                 </h2>
                 <span className="font-mono-ai text-sm text-green-500 dark:text-green-400">{'> _'} The New Developer Stack</span>
             </div>

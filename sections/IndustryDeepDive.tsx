@@ -1,20 +1,29 @@
 "use client"
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Building2, ExternalLink } from 'lucide-react';
+import { Layers, ExternalLink } from 'lucide-react';
 import { fetchByCategory, fetchArticles } from '@/lib/supabase';
 import type { Article } from '@/types';
 
-const industryTabs = ['All', 'Healthcare', 'Finance', 'Legal', 'Education', 'Manufacturing'];
+const categoryTabs = [
+  { label: 'All',      slug: 'all' },
+  { label: 'Models',   slug: 'models' },
+  { label: 'Agents',   slug: 'agents' },
+  { label: 'Tools',    slug: 'tools' },
+  { label: 'Research', slug: 'research' },
+  { label: 'Business', slug: 'business' },
+  { label: 'Policy',   slug: 'policy' },
+  { label: 'Hardware', slug: 'hardware' },
+];
 
 export default function IndustryDeepDive() {
-    const [activeTab, setActiveTab] = useState('All');
+    const [activeTab, setActiveTab] = useState('all');
     const [articles, setArticles] = useState<Article[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         setIsLoading(true);
-        const promise = activeTab === 'All'
+        const promise = activeTab === 'all'
             ? fetchArticles(10)
             : fetchByCategory(activeTab, 10);
         promise
@@ -29,19 +38,19 @@ export default function IndustryDeepDive() {
         <section className="py-8">
             <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 ai-gradient-bg rounded-lg">
-                    <Building2 className="w-5 h-5 text-white" />
+                    <Layers className="w-5 h-5 text-white" />
                 </div>
-                <h2 className="text-2xl font-heading font-bold text-gray-900 dark:text-white">AI in Industry</h2>
+                <h2 className="text-2xl font-heading font-bold text-gray-900 dark:text-white">Browse by Category</h2>
             </div>
             <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-                {industryTabs.map((tab) => (
-                    <button key={tab} onClick={() => setActiveTab(tab)}
+                {categoryTabs.map((tab) => (
+                    <button key={tab.slug} onClick={() => setActiveTab(tab.slug)}
                         className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
-                            activeTab === tab
+                            activeTab === tab.slug
                                 ? 'ai-gradient-bg text-white ai-glow-sm'
                                 : 'bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10'
                         }`}>
-                        {tab}
+                        {tab.label}
                     </button>
                 ))}
             </div>

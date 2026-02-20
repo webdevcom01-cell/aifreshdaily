@@ -76,7 +76,18 @@ export async function fetchByCategory(category: string, limit = 20): Promise<Art
   const { data, error } = await supabase
     .from('articles')
     .select('*')
-    .ilike('category', `%${category}%`)
+    .eq('category', category)
+    .order('published_at', { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return (data as ArticleRow[]).map(mapRow);
+}
+
+export async function fetchVideoArticles(limit = 6): Promise<Article[]> {
+  const { data, error } = await supabase
+    .from('articles')
+    .select('*')
+    .eq('is_video', true)
     .order('published_at', { ascending: false })
     .limit(limit);
   if (error) throw error;

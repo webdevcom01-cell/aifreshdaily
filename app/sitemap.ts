@@ -1,9 +1,9 @@
 import type { MetadataRoute } from 'next';
-import { fetchAllArticleIds } from '@/lib/supabase';
+import { fetchAllArticleIds, fetchPopularTags } from '@/lib/supabase';
 
 const SITE_URL = 'https://aifreshdaily.com';
 
-const CATEGORIES = ['models', 'agents', 'industry', 'coding', 'regulation', 'science', 'education'];
+const CATEGORIES = ['models', 'agents', 'tools', 'research', 'business', 'policy', 'hardware', 'learn'];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static pages
@@ -17,6 +17,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     { url: `${SITE_URL}/subscribe`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
   ];
+
+  // Dynamic tag pages from popular tags
+  let tagPages: MetadataRoute.Sitemap = [];
+  try {
+    const tags = await fetchPopularTags(50);
+    tagPages = tags.map(({ tag }) => ({
+      url: `${SITE_URL}/tag/${tag}`,
+      lastModified: new Date(),
+      changeFrequency: 'daily' as const,
+      priority: 0.7,
+    }));
+  } catch {
+    // Don't fail sitemap if Supabase is unavailable
+  }
 
   // Dynamic article pages from Supabase
   let articlePages: MetadataRoute.Sitemap = [];
@@ -32,5 +46,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Don't fail sitemap if Supabase is unavailable
   }
 
-  return [...staticPages, ...articlePages];
+  return [...staticPages, ...tagPages, ...articlePages];
 }
