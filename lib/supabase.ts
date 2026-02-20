@@ -1,8 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Article, ArticleSource, TimelineEvent, AIVoice } from '@/types';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
+const supabaseUrl =
+  process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'https://placeholder.supabase.co';
+const supabaseAnonKey =
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? 'placeholder-key';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
