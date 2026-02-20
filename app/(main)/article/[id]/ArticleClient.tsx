@@ -13,15 +13,6 @@ import {
 function generateFallbackSummary(article: Article): string {
   return `This article covers a significant development in the AI space: ${article.headline}. The story highlights ongoing trends in artificial intelligence and its broader implications for industry and society.`;
 }
-function generateFallbackKeyPoints(article: Article): string[] {
-  return [
-    `${article.category} continues to be a rapidly evolving area of AI development`,
-    'Industry leaders and researchers are closely monitoring these developments',
-    'Enterprise adoption is accelerating across multiple sectors',
-    'Regulatory frameworks are adapting to keep pace with technological progress',
-  ];
-}
-
 interface Props {
   id: string;
   initialArticle: Article | null;
@@ -84,7 +75,7 @@ export default function ArticleClient({ id, initialArticle }: Props) {
   }
 
   const summary = article.summary || generateFallbackSummary(article);
-  const keyPoints = article.keyPoints || generateFallbackKeyPoints(article);
+  const keyPoints = article.keyPoints ?? [];
   const saved = isBookmarked(article.id);
 
   return (
@@ -151,21 +142,23 @@ export default function ArticleClient({ id, initialArticle }: Props) {
           </>
         )}
 
-        {/* Key Points */}
-        <div className="mb-8">
-          <div className="flex items-center gap-2 mb-4">
-            <CheckCircle2 className="w-4 h-4 text-green-500" />
-            <h2 className="text-sm font-bold uppercase tracking-wider text-green-500">Key Points</h2>
+        {/* Key Points — only shown when no full article body exists */}
+        {!article.body && keyPoints.length > 0 && (
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <CheckCircle2 className="w-4 h-4 text-green-500" />
+              <h2 className="text-sm font-bold uppercase tracking-wider text-green-500">Key Points</h2>
+            </div>
+            <ul className="space-y-3">
+              {keyPoints.map((point, index) => (
+                <li key={index} className="flex items-start gap-3">
+                  <span className="flex-shrink-0 w-5 h-5 rounded-full ai-gradient-bg text-white text-xs flex items-center justify-center font-bold mt-0.5">{index + 1}</span>
+                  <span className="text-foreground/90 leading-relaxed">{point}</span>
+                </li>
+              ))}
+            </ul>
           </div>
-          <ul className="space-y-3">
-            {keyPoints.map((point, index) => (
-              <li key={index} className="flex items-start gap-3">
-                <span className="flex-shrink-0 w-5 h-5 rounded-full ai-gradient-bg text-white text-xs flex items-center justify-center font-bold mt-0.5">{index + 1}</span>
-                <span className="text-foreground/90 leading-relaxed">{point}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        )}
 
         {/* Why It Matters */}
         {article.whyItMatters && (
