@@ -1,19 +1,27 @@
 "use client"
 import { useState, useEffect } from 'react';
-import { Mail, ArrowRight, CheckCircle2, Loader2, AlertCircle } from 'lucide-react';
-import { subscribeEmail } from '@/lib/supabase';
+import { Mail, ArrowRight, CheckCircle2, Loader2, AlertCircle, Users } from 'lucide-react';
+import { subscribeEmail, fetchNewsletterStats } from '@/lib/supabase';
 
 export default function NewsletterSection() {
-  const [email, setEmail]     = useState('');
-  const [status, setStatus]   = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [errMsg, setErrMsg]   = useState('');
+  const [email,       setEmail]       = useState('');
+  const [status,      setStatus]      = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errMsg,      setErrMsg]      = useState('');
   const [alreadyDone, setAlreadyDone] = useState(false);
+  const [subCount,    setSubCount]    = useState<number | null>(null);
 
   // Persist success across page reloads
   useEffect(() => {
     if (localStorage.getItem('ai_fresh_daily_subscribed') === 'true') {
       setAlreadyDone(true);
     }
+  }, []);
+
+  // Fetch subscriber count for social proof
+  useEffect(() => {
+    fetchNewsletterStats()
+      .then(({ total }) => { if (total > 0) setSubCount(total); })
+      .catch(() => {});
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,10 +44,18 @@ export default function NewsletterSection() {
 
     setStatus('success');
     localStorage.setItem('ai_fresh_daily_subscribed', 'true');
+    // Optimistically bump the count
+    setSubCount((prev) => (prev !== null ? prev + 1 : null));
     setTimeout(() => setAlreadyDone(true), 3000);
   };
 
   if (alreadyDone) return null;
+
+  const formattedCount = subCount !== null
+    ? subCount >= 1000
+      ? `${(subCount / 1000).toFixed(1)}K`
+      : subCount.toString()
+    : null;
 
   return (
     <section className="py-12 bg-ai-purple/5 border-y border-ai-purple/10">
@@ -47,9 +63,21 @@ export default function NewsletterSection() {
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-ai-purple/10 text-ai-purple mb-6 animate-bounce-subtle">
           <Mail className="w-8 h-8" />
         </div>
+
         <h2 className="text-3xl font-black font-heading text-gray-900 dark:text-white mb-4 uppercase tracking-tight">
           Neural <span className="ai-gradient-text">Intelligence</span> Digest
         </h2>
+
+        {/* Social proof — subscriber count */}
+        {formattedCount && (
+          <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full bg-white dark:bg-ai-space-light border border-ai-purple/20 shadow-sm">
+            <Users className="w-4 h-4 text-ai-purple" />
+            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              Join <span className="text-ai-purple font-bold">{formattedCount}</span> readers already subscribed
+            </span>
+          </div>
+        )}
+
         <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-lg mx-auto font-mono-ai">
           Join our community of AI enthusiasts. Get the week&apos;s most critical breakthroughs delivered to your inbox.
         </p>

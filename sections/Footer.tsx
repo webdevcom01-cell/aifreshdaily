@@ -100,6 +100,7 @@ export default function Footer() {
               <Link href="/cookies"      className="hover:text-ai-cyan transition-colors">Cookie Policy</Link>
               <Link href="/accessibility" className="hover:text-ai-cyan transition-colors">Accessibility</Link>
               <Link href="/sitemap"      className="hover:text-ai-cyan transition-colors">Sitemap</Link>
+              <Link href="/analytics"    className="hover:text-ai-cyan transition-colors">Analytics</Link>
             </div>
             <p className="text-sm text-gray-500 font-mono-ai">
               © {new Date().getFullYear()} AI Fresh Daily. All rights reserved.

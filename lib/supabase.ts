@@ -286,6 +286,16 @@ export async function fetchMostPopular(limit = 5): Promise<Article[]> {
   return (data as ArticleRow[]).map(mapRow);
 }
 
+/** Fetch newsletter subscriber count via SECURITY DEFINER RPC.
+ *  Returns 0 if the table / function don't exist yet. */
+export async function fetchNewsletterStats(): Promise<{ total: number }> {
+  const { data, error } = await supabase.rpc('get_newsletter_stats');
+  if (error || !data) return { total: 0 };
+  // RPC returns a single row with total_subscribers
+  const row = Array.isArray(data) ? data[0] : data;
+  return { total: Number(row?.total_subscribers ?? 0) };
+}
+
 /** Increment view_count for a single article via SECURITY DEFINER RPC.
  *  Silently no-ops if the RPC or column don't exist yet. */
 export async function incrementViewCount(articleId: string): Promise<void> {
